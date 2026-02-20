@@ -14,7 +14,6 @@ public static class PluginConfig
     // Intervals
     public static ConfigEntry<float> StatsFlushInterval;
     public static ConfigEntry<float> FermenterScanInterval;
-    public static ConfigEntry<float> PortalScanInterval;
     public static ConfigEntry<float> DistanceCheckInterval;
     public static ConfigEntry<float> RpcReportInterval;
 
@@ -46,15 +45,13 @@ public static class PluginConfig
         EnableFermenterScanning = config.Bind("Features", "EnableFermenterScanning", true,
             "Enable periodic fermenter ZDO scanning");
         EnablePortalScanning = config.Bind("Features", "EnablePortalScanning", true,
-            "Enable periodic portal ZDO scanning");
+            "Enable portal scanning on startup and portal build/destroy/rename");
 
         // Intervals
         StatsFlushInterval = config.Bind("Intervals", "StatsFlushInterval", 60f,
             "Seconds between stats flushes");
         FermenterScanInterval = config.Bind("Intervals", "FermenterScanInterval", 10f,
             "Seconds between fermenter scans");
-        PortalScanInterval = config.Bind("Intervals", "PortalScanInterval", 60f,
-            "Seconds between portal scans");
         DistanceCheckInterval = config.Bind("Intervals", "DistanceCheckInterval", 5f,
             "Seconds between player distance checks");
         RpcReportInterval = config.Bind("Intervals", "RpcReportInterval", 300f,

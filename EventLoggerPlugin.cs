@@ -14,6 +14,7 @@ public class EventLoggerPlugin : BaseUnityPlugin
     internal static StatsAggregator Stats;
     internal static Dictionary<long, string> KnownPlayers = new Dictionary<long, string>();
     internal static PlayerTracker PlayerTracker;
+    internal static PortalScanner PortalScanner;
 
     // Fermenter ZDO scan state: uid -> "fermenting" | "done"
     internal static Dictionary<ZDOID, string> FermenterStates = new Dictionary<ZDOID, string>();
@@ -22,11 +23,9 @@ public class EventLoggerPlugin : BaseUnityPlugin
 
     private float distanceCheckTimer;
     private float snifferReportTimer;
-    private float portalScanTimer;
     private float fermenterScanTimer;
 
     private FermenterScanner fermenterScanner;
-    private PortalScanner portalScanner;
 
     internal static string CleanName(string name)
     {
@@ -50,8 +49,8 @@ public class EventLoggerPlugin : BaseUnityPlugin
         PluginConfig.Bind(Config);
         Stats = new StatsAggregator();
         PlayerTracker = new PlayerTracker();
+        PortalScanner = new PortalScanner();
         fermenterScanner = new FermenterScanner();
-        portalScanner = new PortalScanner();
 
         var harmony = new Harmony("games.blockfactory.eventlogger");
 
@@ -76,11 +75,17 @@ public class EventLoggerPlugin : BaseUnityPlugin
         PatchSafe(harmony, typeof(FermenterAddPatch), "Fermenter.RPC_AddItem");
         PatchSafe(harmony, typeof(CookingAddPatch), "CookingStation.RPC_AddItem");
         PatchSafe(harmony, typeof(CookingRemoveDonePatch), "CookingStation.RPC_RemoveDoneItem");
+        PatchSafe(harmony, typeof(PortalPlacePatch), "Piece.SetCreator (portal)");
+        PatchSafe(harmony, typeof(PortalDestroyPatch), "WearNTear.Destroy (portal)");
+        PatchSafe(harmony, typeof(PortalRenamePatch), "TeleportWorld.RPC_SetTag");
 
         if (PluginConfig.EnableRpcSniffer.Value)
         {
             PatchSafe(harmony, typeof(RpcSnifferPatch), "ZRoutedRpc.HandleRoutedRPC (RPC sniffer)");
         }
+
+        // Initial portal scan (will retry if world isn't loaded yet)
+        PortalScanner.RequestScan();
 
         Log.LogInfo("EventLogger v3.0.0 loaded");
     }
@@ -92,7 +97,6 @@ public class EventLoggerPlugin : BaseUnityPlugin
             float dt = Time.deltaTime;
             distanceCheckTimer += dt;
             snifferReportTimer += dt;
-            portalScanTimer += dt;
             fermenterScanTimer += dt;
 
             if (distanceCheckTimer >= PluginConfig.DistanceCheckInterval.Value)
@@ -107,17 +111,13 @@ public class EventLoggerPlugin : BaseUnityPlugin
                 snifferReportTimer = 0f;
             }
 
-            if (portalScanTimer >= PluginConfig.PortalScanInterval.Value)
-            {
-                portalScanner.Scan();
-                portalScanTimer = 0f;
-            }
-
             if (fermenterScanTimer >= PluginConfig.FermenterScanInterval.Value)
             {
                 fermenterScanner.Scan();
                 fermenterScanTimer = 0f;
             }
+
+            PortalScanner.CheckAndScan();
 
             if (Stats.ShouldFlush())
             {

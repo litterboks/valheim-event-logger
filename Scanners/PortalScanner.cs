@@ -6,12 +6,29 @@ namespace EventLogger;
 
 public class PortalScanner
 {
-    public void Scan()
+    private float pendingScanTime = -1f;
+    private const float DEBOUNCE_SECONDS = 2f;
+
+    public void RequestScan()
     {
+        pendingScanTime = Time.time + DEBOUNCE_SECONDS;
+    }
+
+    public void CheckAndScan()
+    {
+        if (pendingScanTime < 0f || Time.time < pendingScanTime) return;
+        pendingScanTime = -1f;
+
+        if (!PluginConfig.EnablePortalScanning.Value) return;
+
+        if (ZDOMan.instance == null)
+        {
+            RequestScan(); // world not ready, retry
+            return;
+        }
+
         try
         {
-            if (!PluginConfig.EnablePortalScanning.Value) return;
-            if (ZDOMan.instance == null) return;
             var objectsByID = Traverse.Create(ZDOMan.instance).Field("m_objectsByID").GetValue<Dictionary<ZDOID, ZDO>>();
             if (objectsByID == null) return;
 
