@@ -39,8 +39,9 @@ static class CharacterDropPatch
                 }
 
                 var pos = character.transform.position;
+                var biome = Heightmap.FindBiome(pos);
                 EventLoggerPlugin.Log.LogInfo(
-                    $"[EventLog] PLAYER_DEATH player={playerName} killed_by={killer} pos={pos.x:F0},{pos.y:F0},{pos.z:F0}");
+                    $"[EventLog] PLAYER_DEATH player={playerName} killed_by={killer} biome={biome} pos={pos.x:F0},{pos.y:F0},{pos.z:F0}");
                 return;
             }
 

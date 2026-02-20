@@ -211,29 +211,36 @@ public class StatsAggregator
     public void Flush()
     {
         foreach (var kvp in playerStats)
-        {
-            var name = EventLoggerPlugin.CleanName(kvp.Key);
-            var stats = kvp.Value;
-
-            if (!stats.HasActivity()) continue;
-
-            EventLoggerPlugin.Log.LogInfo(
-                $"[EventLog] STATS player={name} kills={stats.kills} damage_dealt={stats.damage_dealt:F0} damage_taken={stats.damage_taken:F0} distance={stats.distance:F0} pickups={stats.TotalPickups()} tames={stats.tames} food_eaten={stats.food_eaten} items_smelted={stats.items_smelted}");
-
-            if (stats.damage_by_mob.Count > 0)
-            {
-                var sorted = new List<KeyValuePair<string, float>>(stats.damage_by_mob);
-                sorted.Sort((a, b) => b.Value.CompareTo(a.Value));
-                foreach (var kv in sorted)
-                {
-                    EventLoggerPlugin.Log.LogInfo(
-                        $"[EventLog] MOB_DMG player={name} mob={kv.Key} damage={kv.Value:F0}");
-                }
-            }
-
-            stats.Reset();
-        }
+            FlushPlayerStats(kvp.Key, kvp.Value);
 
         lastFlush = Time.time;
+    }
+
+    public void FlushPlayer(string playerName)
+    {
+        if (!playerStats.ContainsKey(playerName)) return;
+        FlushPlayerStats(playerName, playerStats[playerName]);
+    }
+
+    private void FlushPlayerStats(string playerName, PlayerStats stats)
+    {
+        if (!stats.HasActivity()) return;
+
+        var name = EventLoggerPlugin.CleanName(playerName);
+        EventLoggerPlugin.Log.LogInfo(
+            $"[EventLog] STATS player={name} kills={stats.kills} damage_dealt={stats.damage_dealt:F0} damage_taken={stats.damage_taken:F0} distance={stats.distance:F0} pickups={stats.TotalPickups()} tames={stats.tames} food_eaten={stats.food_eaten} items_smelted={stats.items_smelted}");
+
+        if (stats.damage_by_mob.Count > 0)
+        {
+            var sorted = new List<KeyValuePair<string, float>>(stats.damage_by_mob);
+            sorted.Sort((a, b) => b.Value.CompareTo(a.Value));
+            foreach (var kv in sorted)
+            {
+                EventLoggerPlugin.Log.LogInfo(
+                    $"[EventLog] MOB_DMG player={name} mob={kv.Key} damage={kv.Value:F0}");
+            }
+        }
+
+        stats.Reset();
     }
 }

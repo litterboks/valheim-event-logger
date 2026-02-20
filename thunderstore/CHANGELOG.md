@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.2.0
+
+### Added
+- **Biome on player death** — `PLAYER_DEATH` now includes `biome=` field (Meadows, BlackForest, etc.)
+- **Tombstone events** — `TOMBSTONE_CREATE` logged on death with biome and position, `TOMBSTONE_PICKUP` logged when items are recovered
+- **Stats flush on disconnect** — player stats are immediately flushed when they disconnect, so the last session's data is never lost
+
 ## 3.1.0
 
 ### Added

@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace EventLogger;
 
-[BepInPlugin("games.blockfactory.eventlogger", "EventLogger", "3.1.0")]
+[BepInPlugin("games.blockfactory.eventlogger", "EventLogger", "3.2.0")]
 public class EventLoggerPlugin : BaseUnityPlugin
 {
     internal static ManualLogSource Log;
@@ -75,6 +75,8 @@ public class EventLoggerPlugin : BaseUnityPlugin
         PatchSafe(harmony, typeof(FermenterAddPatch), "Fermenter.RPC_AddItem");
         PatchSafe(harmony, typeof(CookingAddPatch), "CookingStation.RPC_AddItem");
         PatchSafe(harmony, typeof(CookingRemoveDonePatch), "CookingStation.RPC_RemoveDoneItem");
+        PatchSafe(harmony, typeof(TombstoneCreatePatch), "Player.CreateTombStone");
+        PatchSafe(harmony, typeof(TombstonePickupPatch), "Container.RPC_RequestTakeAll (tombstone)");
         PatchSafe(harmony, typeof(PortalPlacePatch), "Piece.SetCreator (portal)");
         PatchSafe(harmony, typeof(PortalDestroyPatch), "WearNTear.Destroy (portal)");
         PatchSafe(harmony, typeof(PortalRenamePatch), "TeleportWorld.RPC_SetTag");
@@ -87,7 +89,7 @@ public class EventLoggerPlugin : BaseUnityPlugin
         // Initial portal scan (will retry if world isn't loaded yet)
         PortalScanner.RequestScan();
 
-        Log.LogInfo("EventLogger v3.1.0 loaded");
+        Log.LogInfo("EventLogger v3.2.0 loaded");
     }
 
     void Update()

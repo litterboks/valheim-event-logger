@@ -47,6 +47,7 @@ static class PeerDisconnectPatch
                 if (peer.m_rpc == rpc)
                 {
                     string name = EventLoggerPlugin.CleanName(peer.m_playerName);
+                    EventLoggerPlugin.Stats.FlushPlayer(name);
                     EventLoggerPlugin.Log.LogInfo($"[EventLog] PEER_DISCONNECT player={name} uid={peer.m_uid}");
                     EventLoggerPlugin.KnownPlayers.Remove(peer.m_uid);
                     EventLoggerPlugin.PlayerTracker?.RemovePlayer(peer.m_uid);

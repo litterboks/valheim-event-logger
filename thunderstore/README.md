@@ -33,9 +33,11 @@ Install via Thunderstore mod manager or `r2modman`.
 |-------|--------|
 | `PEER_CONNECT` | `player=X uid=N` |
 | `PEER_DISCONNECT` | `player=X uid=N` |
-| `PLAYER_DEATH` | `player=X killed_by=Y pos=X,Y,Z` |
+| `PLAYER_DEATH` | `player=X killed_by=Y biome=Z pos=X,Y,Z` |
 | `BOSS_KILL` | `boss=X killed_by=Y pos=X,Y,Z` |
 | `MOB_KILL` | `player=X mob=Y stars=N pos=X,Y,Z` |
+| `TOMBSTONE_CREATE` | `player=X biome=Y pos=X,Y,Z` |
+| `TOMBSTONE_PICKUP` | `player=X pos=X,Y,Z` |
 | `TAME` | `player=X creature=Y` |
 | `EVENT_START` | `event=X` |
 | `EVENT_STOP` | *(no params)* |
