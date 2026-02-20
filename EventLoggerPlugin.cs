@@ -7,13 +7,11 @@ using System.Collections.Generic;
 
 namespace EventLogger;
 
-[BepInPlugin("games.blockfactory.eventlogger", "EventLogger", "3.2.0")]
+[BepInPlugin("games.blockfactory.eventlogger", "EventLogger", "4.0.0")]
 public class EventLoggerPlugin : BaseUnityPlugin
 {
     internal static ManualLogSource Log;
-    internal static StatsAggregator Stats;
     internal static Dictionary<long, string> KnownPlayers = new Dictionary<long, string>();
-    internal static PlayerTracker PlayerTracker;
     internal static PortalScanner PortalScanner;
 
     // Fermenter ZDO scan state: uid -> "fermenting" | "done"
@@ -21,8 +19,6 @@ public class EventLoggerPlugin : BaseUnityPlugin
     // Who filled each fermenter (by ZDO uid)
     internal static Dictionary<ZDOID, string> FermenterFilledBy = new Dictionary<ZDOID, string>();
 
-    private float distanceCheckTimer;
-    private float snifferReportTimer;
     private float fermenterScanTimer;
 
     private FermenterScanner fermenterScanner;
@@ -47,8 +43,6 @@ public class EventLoggerPlugin : BaseUnityPlugin
     {
         Log = Logger;
         PluginConfig.Bind(Config);
-        Stats = new StatsAggregator();
-        PlayerTracker = new PlayerTracker();
         PortalScanner = new PortalScanner();
         fermenterScanner = new FermenterScanner();
 
@@ -81,15 +75,10 @@ public class EventLoggerPlugin : BaseUnityPlugin
         PatchSafe(harmony, typeof(PortalDestroyPatch), "WearNTear.Destroy (portal)");
         PatchSafe(harmony, typeof(PortalRenamePatch), "TeleportWorld.RPC_SetTag");
 
-        if (PluginConfig.EnableRpcSniffer.Value)
-        {
-            PatchSafe(harmony, typeof(RpcSnifferPatch), "ZRoutedRpc.HandleRoutedRPC (RPC sniffer)");
-        }
-
         // Initial portal scan (will retry if world isn't loaded yet)
         PortalScanner.RequestScan();
 
-        Log.LogInfo("EventLogger v3.2.0 loaded");
+        Log.LogInfo("EventLogger v4.0.0 loaded");
     }
 
     void Update()
@@ -97,21 +86,7 @@ public class EventLoggerPlugin : BaseUnityPlugin
         try
         {
             float dt = Time.deltaTime;
-            distanceCheckTimer += dt;
-            snifferReportTimer += dt;
             fermenterScanTimer += dt;
-
-            if (distanceCheckTimer >= PluginConfig.DistanceCheckInterval.Value)
-            {
-                PlayerTracker.Update();
-                distanceCheckTimer = 0f;
-            }
-
-            if (PluginConfig.EnableRpcSniffer.Value && snifferReportTimer >= PluginConfig.RpcReportInterval.Value)
-            {
-                RpcSnifferPatch.FlushReport();
-                snifferReportTimer = 0f;
-            }
 
             if (fermenterScanTimer >= PluginConfig.FermenterScanInterval.Value)
             {
@@ -120,11 +95,6 @@ public class EventLoggerPlugin : BaseUnityPlugin
             }
 
             PortalScanner.CheckAndScan();
-
-            if (Stats.ShouldFlush())
-            {
-                Stats.Flush();
-            }
         }
         catch (Exception e)
         {

@@ -19,7 +19,6 @@ static class SmelterFuelPatch
                 item?.m_dropPrefab?.name ?? __instance.m_fuelItem?.m_itemData?.m_shared?.m_name ?? "fuel");
             EventLoggerPlugin.Log.LogInfo(
                 $"[EventLog] SMELT_FUEL player={playerName} station={stationName} item={itemName}");
-            EventLoggerPlugin.Stats.RecordSmelt(playerName);
         }
         catch (System.Exception e)
         {
@@ -44,7 +43,6 @@ static class SmelterOrePatch
             string itemName = EventLoggerPlugin.CleanName(item?.m_dropPrefab?.name ?? item?.m_shared?.m_name ?? "ore");
             EventLoggerPlugin.Log.LogInfo(
                 $"[EventLog] SMELT_ORE player={playerName} station={stationName} item={itemName}");
-            EventLoggerPlugin.Stats.RecordSmelt(playerName);
         }
         catch (System.Exception e)
         {

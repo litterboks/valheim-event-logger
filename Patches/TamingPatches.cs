@@ -20,7 +20,6 @@ static class TameablePatch
             if (closestPlayer == null) return;
 
             string playerName = EventLoggerPlugin.CleanName(closestPlayer.GetPlayerName());
-            EventLoggerPlugin.Stats.RecordTame(playerName);
             EventLoggerPlugin.Log.LogInfo($"[EventLog] TAME player={playerName} creature={creatureName}");
         }
         catch (System.Exception e)

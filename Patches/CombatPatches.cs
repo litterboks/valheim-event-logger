@@ -72,7 +72,6 @@ static class CharacterDropPatch
                     if (player != null)
                     {
                         string playerName = EventLoggerPlugin.CleanName(player.GetPlayerName());
-                        EventLoggerPlugin.Stats.RecordKill(playerName);
 
                         int level = character.GetLevel();
                         if (level >= PluginConfig.MobKillMinStars.Value + 1)

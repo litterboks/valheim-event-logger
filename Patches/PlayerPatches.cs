@@ -18,7 +18,6 @@ static class EatFoodPatch
             string foodName = EventLoggerPlugin.CleanName(item?.m_dropPrefab?.name ?? item?.m_shared?.m_name ?? "unknown");
             EventLoggerPlugin.Log.LogInfo(
                 $"[EventLog] EAT player={playerName} food={foodName}");
-            EventLoggerPlugin.Stats.RecordFoodEaten(playerName);
         }
         catch (System.Exception e)
         {

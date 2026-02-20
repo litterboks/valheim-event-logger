@@ -20,7 +20,8 @@ static class PickablePatch
             if (string.IsNullOrEmpty(itemName)) return;
 
             int amount = __instance.m_amount;
-            EventLoggerPlugin.Stats.RecordPickup(playerName, itemName, amount);
+            EventLoggerPlugin.Log.LogInfo(
+                $"[EventLog] PICKUP player={playerName} item={EventLoggerPlugin.CleanName(itemName)} amount={amount}");
         }
         catch (System.Exception e)
         {
