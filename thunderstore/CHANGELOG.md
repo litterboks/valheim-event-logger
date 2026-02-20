@@ -1,5 +1,16 @@
 # Changelog
 
+## 3.1.0
+
+### Added
+- **BOSS_KILL player attribution** — `killed_by=` field now shows who landed the killing blow
+- **Portal events** — new `PORTAL_BUILD`, `PORTAL_DESTROY`, `PORTAL_RENAME` events with player/tag/position
+- **Configurable MOB_KILL threshold** — `MobKillMinStars` setting (0=all kills, 1=1-star+ default, 2=2-star+)
+
+### Changed
+- **Event-driven portal scanning** — replaces 60-second polling; scans on startup and portal build/destroy/rename with 2s debounce
+- **Optimized fermenter scanner** — initial full scan once, then only checks tracked fermenters instead of iterating all ZDOs
+
 ## 3.0.0
 
 ### Added

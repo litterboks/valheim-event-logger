@@ -7,7 +7,7 @@ using System.Collections.Generic;
 
 namespace EventLogger;
 
-[BepInPlugin("games.blockfactory.eventlogger", "EventLogger", "3.0.0")]
+[BepInPlugin("games.blockfactory.eventlogger", "EventLogger", "3.1.0")]
 public class EventLoggerPlugin : BaseUnityPlugin
 {
     internal static ManualLogSource Log;
@@ -87,7 +87,7 @@ public class EventLoggerPlugin : BaseUnityPlugin
         // Initial portal scan (will retry if world isn't loaded yet)
         PortalScanner.RequestScan();
 
-        Log.LogInfo("EventLogger v3.0.0 loaded");
+        Log.LogInfo("EventLogger v3.1.0 loaded");
     }
 
     void Update()

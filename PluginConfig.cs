@@ -27,6 +27,7 @@ public static class PluginConfig
     public static ConfigEntry<float> CooldownMinutes;
 
     // Events
+    public static ConfigEntry<int> MobKillMinStars;
     public static ConfigEntry<bool> EnableCombatEvents;
     public static ConfigEntry<bool> EnableCraftingEvents;
     public static ConfigEntry<bool> EnableGatheringEvents;
@@ -74,6 +75,8 @@ public static class PluginConfig
             "Shared cooldown in minutes between alerts of the same type per player");
 
         // Events
+        MobKillMinStars = config.Bind("Events", "MobKillMinStars", 1,
+            "Minimum star level to log MOB_KILL events (0=all kills, 1=1-star+, 2=2-star+)");
         EnableCombatEvents = config.Bind("Events", "EnableCombatEvents", true,
             "Log PLAYER_DEATH, BOSS_KILL, MOB_KILL events");
         EnableCraftingEvents = config.Bind("Events", "EnableCraftingEvents", true,

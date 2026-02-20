@@ -34,7 +34,7 @@ Install via Thunderstore mod manager or `r2modman`.
 | `PEER_CONNECT` | `player=X uid=N` |
 | `PEER_DISCONNECT` | `player=X uid=N` |
 | `PLAYER_DEATH` | `player=X killed_by=Y pos=X,Y,Z` |
-| `BOSS_KILL` | `boss=X pos=X,Y,Z` |
+| `BOSS_KILL` | `boss=X killed_by=Y pos=X,Y,Z` |
 | `MOB_KILL` | `player=X mob=Y stars=N pos=X,Y,Z` |
 | `TAME` | `player=X creature=Y` |
 | `EVENT_START` | `event=X` |
@@ -55,6 +55,9 @@ Install via Thunderstore mod manager or `r2modman`.
 | `COOK_DONE` | `player=X item=Y` |
 | `HONEY_EXTRACT` | `player=X` |
 | `SAP_EXTRACT` | `player=X` |
+| `PORTAL_BUILD` | `player=X pos=X,Z` |
+| `PORTAL_DESTROY` | `tag=X pos=X,Z` |
+| `PORTAL_RENAME` | `player=X tag=Y pos=X,Z` |
 | `PORTAL_LIST` | `portals=tag\|x\|z,...` |
 | `STATS` | `player=X kills=N damage_dealt=N ...` |
 | `MOB_DMG` | `player=X mob=Y damage=N` |
@@ -98,6 +101,7 @@ After first run, edit `BepInEx/config/games.blockfactory.eventlogger.cfg`:
 ### Events
 | Setting | Default | Description |
 |---------|---------|-------------|
+| `MobKillMinStars` | `1` | Min star level for MOB_KILL (0=all, 1=1-star+, 2=2-star+) |
 | `EnableCombatEvents` | `true` | PLAYER_DEATH, BOSS_KILL, MOB_KILL |
 | `EnableCraftingEvents` | `true` | SMELT_*, FERMENTER_*, COOK_* |
 | `EnableGatheringEvents` | `true` | Pickups, HONEY_EXTRACT, SAP_EXTRACT |

@@ -47,9 +47,17 @@ static class CharacterDropPatch
             if (character.IsBoss())
             {
                 string bossName = EventLoggerPlugin.CleanName(character.m_name);
+                string bossKiller = "unknown";
+                var bossLastHit = Traverse.Create(character).Field("m_lastHit").GetValue<HitData>();
+                if (bossLastHit != null)
+                {
+                    var att = bossLastHit.GetAttacker();
+                    if (att != null && att.IsPlayer())
+                        bossKiller = EventLoggerPlugin.CleanName((att as Player)?.GetPlayerName());
+                }
                 var pos = character.transform.position;
                 EventLoggerPlugin.Log.LogInfo(
-                    $"[EventLog] BOSS_KILL boss={bossName} pos={pos.x:F0},{pos.y:F0},{pos.z:F0}");
+                    $"[EventLog] BOSS_KILL boss={bossName} killed_by={bossKiller} pos={pos.x:F0},{pos.y:F0},{pos.z:F0}");
                 return;
             }
 
@@ -66,7 +74,7 @@ static class CharacterDropPatch
                         EventLoggerPlugin.Stats.RecordKill(playerName);
 
                         int level = character.GetLevel();
-                        if (level >= 2)
+                        if (level >= PluginConfig.MobKillMinStars.Value + 1)
                         {
                             string mobName = EventLoggerPlugin.CleanName(character.m_name);
                             var pos = character.transform.position;
